@@ -264,7 +264,7 @@ multiCompose fs = foldr (.) id fs
 --   multiApp id [head, (!!2), last] "axbxc" ==> ['a','b','c'] i.e. "abc"
 --   multiApp sum [head, (!!2), last] [1,9,2,9,3] ==> 6
 
-multiApp = todo
+multiApp f gs x = f $ map ($ x) gs
 
 ------------------------------------------------------------------------------
 -- Ex 14: in this exercise you get to implement an interpreter for a
@@ -299,4 +299,16 @@ multiApp = todo
 -- function, the surprise won't work. See section 3.8 in the material.
 
 interpreter :: [String] -> [String]
-interpreter commands = todo
+interpreter commands =
+  let
+    go :: Int -> Int -> [String] -> [String]
+    go x y [] = []
+    go x y (c:cs) = case c of
+      "up"     -> go x (y + 1) cs
+      "down"   -> go x (y - 1) cs
+      "left"   -> go (x - 1) y cs
+      "right"  -> go (x + 1) y cs
+      "printX" -> show x : go x y cs
+      "printY" -> show y : go x y cs
+      _        -> go x y cs
+  in go 0 0 commands
